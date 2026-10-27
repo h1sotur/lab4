@@ -1,3 +1,4 @@
+import http from 'node:http';
 import fs from 'node:fs';
 import { Command } from 'commander';
 
@@ -12,11 +13,29 @@ program
 program.parse();
 const options = program.opts();
 
-function startServer() {
-  console.log('Файл знайдено, тут буде запуск сервера');
+// відправка JSON-відповіді
+function send(res, status, payload) {
+  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+  res.end(JSON.stringify(payload));
 }
 
-// перевірка існування файлу через колбек
+function startServer() {
+  const server = http.createServer((req, res) => {
+    const url = new URL(req.url, 'http://localhost');
+
+    if (url.pathname !== '/') {
+      send(res, 404, { error: 'Маршрут не знайдено' });
+      return;
+    }
+
+    send(res, 200, { message: 'Тут будуть дані' });
+  });
+
+  server.listen(Number(options.port), options.host, () => {
+    console.log(`Сервер: http://${options.host}:${options.port}`);
+  });
+}
+
 fs.access(options.input, (err) => {
   if (err) {
     console.error('Cannot find input file');
