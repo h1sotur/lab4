@@ -9,6 +9,6 @@
     "dev": "node --watch main.js"
   },
   "dependencies": {
-    "commander": "^..."
-  }
+  "commander": "^15.0.0"
+}
 }
