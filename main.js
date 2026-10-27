@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import { Command } from 'commander';
 
 const program = new Command();
@@ -11,4 +12,15 @@ program
 program.parse();
 const options = program.opts();
 
-console.log(options);
+function startServer() {
+  console.log('Файл знайдено, тут буде запуск сервера');
+}
+
+// перевірка існування файлу через колбек
+fs.access(options.input, (err) => {
+  if (err) {
+    console.error('Cannot find input file');
+    process.exit(1);
+  }
+  startServer();
+});
